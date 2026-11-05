@@ -1,0 +1,12 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+
+# Editors
+.vscode/
+.idea/
+
+# Dependencies (not used by this static site, kept for safety)
+node_modules/

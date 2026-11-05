@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="Jhon Ñaupari — Understanding economics. Building with data.">
+  <rect width="1200" height="630" fill="#0b0b0d"/>
+  <g stroke="#ffffff" stroke-opacity="0.05">
+    <path d="M0 90 H1200 M0 180 H1200 M0 270 H1200 M0 360 H1200 M0 450 H1200 M0 540 H1200"/>
+    <path d="M100 0 V630 M300 0 V630 M500 0 V630 M700 0 V630 M900 0 V630 M1100 0 V630"/>
+  </g>
+  <text x="90" y="150" font-family="'JetBrains Mono', monospace" font-size="26" letter-spacing="6" fill="#b5a1f0">JHON ÑAUPARI · ECONOMIST</text>
+  <text x="86" y="320" font-family="Georgia, 'Times New Roman', serif" font-size="92" fill="#ededee">Understanding economics.</text>
+  <text x="86" y="420" font-family="Georgia, 'Times New Roman', serif" font-size="92" font-style="italic" fill="#b5a1f0">Building with data.</text>
+  <text x="90" y="545" font-family="'JetBrains Mono', monospace" font-size="24" fill="#a3a3ac">FP&amp;A · Econometrics · Machine Learning · Research</text>
+</svg>
