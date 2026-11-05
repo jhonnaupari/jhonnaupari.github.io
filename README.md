@@ -154,7 +154,3 @@ en los bloques de tema oscuro y claro. Tipografías: variables `--font-display`,
 ## 9. Checklist de datos pendientes
 
 Ver [`CONTENT-TODO.md`](CONTENT-TODO.md).
-
----
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
