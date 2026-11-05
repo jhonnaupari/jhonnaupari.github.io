@@ -74,7 +74,7 @@ window.SKILLS = {
 /* ------------------------------ Languages ------------------------------- */
 window.LANGUAGES = [
   { name: { en: "Spanish", es: "Español" }, level: { en: "Native", es: "Nativo" } },
-  { name: { en: "English", es: "Inglés" }, level: { en: "Intermediate (in progress · UNTELS)", es: "Intermedio (en progreso · UNTELS)" } }
+  { name: { en: "English", es: "Inglés" }, level: { en: "Intermediate (in progress)", es: "Intermedio (en progreso · UNTELS)" } }
 ];
 
 /* --------------------------- Certifications ----------------------------- */
@@ -94,7 +94,7 @@ window.EXPERIENCE = [
     role: { en: "FP&A Professional Intern", es: "Practicante Profesional de FP&A" },
     org: "Laureate Perú",
     location: { en: "Lima, Peru", es: "Lima, Perú" },
-    period: { en: "Sep 2025 — Present", es: "Set 2025 — Actualidad" },
+    period: { en: "Sep 2025 — Nov 2026", es: "Set 2025 — Nov 2026" },
     provisional: false,
     points: {
       en: [
