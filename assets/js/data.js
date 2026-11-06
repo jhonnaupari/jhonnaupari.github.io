@@ -280,3 +280,73 @@ window.WRITING = [
     }
   }
 ];
+
+/* ---------------- Home hero: interactive profile map --------------------
+   Each tab is a facet of your profile. `core` is the central node, `nodes`
+   are the satellites (up to 5), and `define` is the "how I'd define myself"
+   line shown below the map. Edit freely — labels can be a plain string or
+   { en, es } for both languages. */
+window.PROFILE_MAP = [
+  {
+    key: "perfil",
+    tab: { en: "Profile", es: "Perfil" },
+    hint: { en: "PROFILE", es: "PERFIL" },
+    core: { en: "Economist", es: "Economista" },
+    nodes: [
+      { en: "Finance", es: "Finanzas" },
+      { en: "Data", es: "Datos" },
+      { en: "Research", es: "Investigación" },
+      { en: "Decision", es: "Decisión" },
+      { en: "AI", es: "IA" }
+    ],
+    define: {
+      en: "An FP&A economist who reads the economy through data and builds the tools to decide.",
+      es: "Economista de FP&A que lee la economía con datos y construye las herramientas para decidir."
+    }
+  },
+  {
+    key: "finanzas",
+    tab: { en: "Finance", es: "Finanzas" },
+    hint: { en: "FINANCE", es: "FINANZAS" },
+    core: "FP&A",
+    nodes: [
+      "Forecast",
+      "P&L",
+      { en: "Budget", es: "Presupuesto" },
+      { en: "Modeling", es: "Modelado" },
+      { en: "Variance", es: "Variaciones" }
+    ],
+    define: {
+      en: "I turn scattered numbers into a clear picture: forecasting, P&L and budget control.",
+      es: "Convierto números dispersos en una imagen clara: forecasting, P&L y control presupuestal."
+    }
+  },
+  {
+    key: "datos",
+    tab: { en: "Data", es: "Datos" },
+    hint: { en: "DATA", es: "DATOS" },
+    core: "Data / BI",
+    nodes: ["Power BI", "SQL", "ETL", "Power Query", "Dashboards"],
+    define: {
+      en: "I automate and visualize the data flow end to end.",
+      es: "Automatizo y visualizo el flujo de datos de punta a punta."
+    }
+  },
+  {
+    key: "research",
+    tab: { en: "Research", es: "Investigación" },
+    hint: { en: "RESEARCH", es: "INVESTIGACIÓN" },
+    core: "Research",
+    nodes: [
+      { en: "Econometrics", es: "Econometría" },
+      { en: "Microdata", es: "Microdatos" },
+      "ML / IA",
+      { en: "Economics", es: "Economía" },
+      { en: "Evidence", es: "Evidencia" }
+    ],
+    define: {
+      en: "Econometric rigor and microdata, with machine learning applied to economics.",
+      es: "Rigor econométrico y microdatos, con machine learning aplicado a economía."
+    }
+  }
+];
