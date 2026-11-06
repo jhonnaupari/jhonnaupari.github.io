@@ -585,15 +585,16 @@
     for (var k in attrs) if (attrs.hasOwnProperty(k)) e.setAttribute(k, attrs[k]);
     return e;
   }
-  // Satellite positions (x, y, ly = label y-offset) around the centre node.
+  // Six concept positions. o = outward direction (for sub-concept fan + label side).
   var NM_POS = [
-    { x: 74,  y: 54,  ly: -16 },
-    { x: 286, y: 64,  ly: -16 },
-    { x: 314, y: 170, ly: -16 },
-    { x: 180, y: 238, ly: 24 },
-    { x: 52,  y: 182, ly: -16 }
+    { x: 195, y: 66,  o: [0, -1] },
+    { x: 300, y: 122, o: [0.9, -0.5] },
+    { x: 300, y: 222, o: [0.9, 0.5] },
+    { x: 195, y: 278, o: [0, 1] },
+    { x: 90,  y: 222, o: [-0.9, 0.5] },
+    { x: 90,  y: 122, o: [-0.9, -0.5] }
   ];
-  var NM_CENTER = { x: 180, y: 132 };
+  var NM_CENTER = { x: 195, y: 172 };
   var heroTabIndex = 0;      // which facet is active
   var heroManualUntil = 0;   // scroll-advance pauses briefly after a click
 
@@ -608,78 +609,97 @@
     return pts.join(" ");
   }
 
-  // draw one facet's cluster: detailed "hub" satellites + hexagon core
+  // one detailed "emblem" node: concentric rings + radial ticks + inner hexagon
+  function appendEmblem(parent, x, y, R) {
+    parent.appendChild(svgEl("circle", { cx: x, cy: y, r: R, class: "nm-emb-outer" }));
+    parent.appendChild(svgEl("circle", { cx: x, cy: y, r: (R * 0.64).toFixed(1), class: "nm-emb-inner" }));
+    for (var k = 0; k < 8; k++) {
+      var a = Math.PI / 4 * k;
+      parent.appendChild(svgEl("line", {
+        x1: (x + R * 0.64 * Math.cos(a)).toFixed(1), y1: (y + R * 0.64 * Math.sin(a)).toFixed(1),
+        x2: (x + R * Math.cos(a)).toFixed(1), y2: (y + R * Math.sin(a)).toFixed(1), class: "nm-emb-tick"
+      }));
+    }
+    parent.appendChild(svgEl("polygon", { points: hexPoints(x, y, R * 0.3), class: "nm-emb-hex" }));
+    parent.appendChild(svgEl("circle", { cx: x, cy: y, r: 1.3, class: "nm-emb-core" }));
+  }
+
+  // draw one facet: emblem concepts + sub-concepts (always visible) + core
   function drawHeroCluster(item) {
     var svg = $("#hero-map");
     if (!svg || !item) return;
-    var edgesG = $(".nm-edges", svg), nodesG = $(".nm-nodes", svg);
+    var edgesG = $(".nm-edges", svg), subG = $(".nm-sub", svg), nodesG = $(".nm-nodes", svg);
     if (!edgesG || !nodesG) return;
-    edgesG.textContent = ""; nodesG.textContent = "";
+    edgesG.textContent = ""; if (subG) subG.textContent = ""; nodesG.textContent = "";
 
     var labels = item.nodes || [];
     var n = Math.min(labels.length, NM_POS.length);
     var cx = NM_CENTER.x, cy = NM_CENTER.y;
-    var spokes = [];
 
-    // spokes (centre → satellite), each with a dot at the midpoint
+    // dotted centre → concept links, with small dots along them
     for (var i = 0; i < n; i++) {
-      var p = NM_POS[i];
-      var l = svgEl("line", { x1: cx, y1: cy, x2: p.x, y2: p.y, class: "nm-edge nm-edge-spoke" });
-      edgesG.appendChild(l); spokes.push(l);
-      edgesG.appendChild(svgEl("circle", { cx: (cx + p.x) / 2, cy: (cy + p.y) / 2, r: 1.5, class: "nm-mid-dot" }));
-    }
-    // faint ring linking the satellites
-    for (var j = 0; j < n; j++) {
-      var a = NM_POS[j], b = NM_POS[(j + 1) % n];
-      edgesG.appendChild(svgEl("line", { x1: a.x, y1: a.y, x2: b.x, y2: b.y, class: "nm-edge nm-edge-ring" }));
+      var pp = NM_POS[i];
+      edgesG.appendChild(svgEl("line", { x1: cx, y1: cy, x2: pp.x, y2: pp.y, class: "nm-link" }));
+      [0.38, 0.68].forEach((function (p) {
+        return function (f) {
+          edgesG.appendChild(svgEl("circle", { cx: (cx + (p.x - cx) * f).toFixed(1), cy: (cy + (p.y - cy) * f).toFixed(1), r: 1.1, class: "nm-link-dot" }));
+        };
+      })(pp));
     }
 
-    // "hub" node for each satellite + hover highlight of its connection
-    var TICKS = [[0, -13], [0, 13], [-13, 0], [13, 0]];
+    // concept groups (concept emblem + its sub-concept emblems), always visible
+    var groups = [];
     for (var k = 0; k < n; k++) {
       (function (p, idx) {
         var g = svgEl("g", { class: "nm-node" });
-        g.appendChild(svgEl("circle", { cx: p.x, cy: p.y, r: 9, class: "nm-hub-ring" }));
-        g.appendChild(svgEl("circle", { cx: p.x, cy: p.y, r: 5, class: "nm-hub-core" }));
-        var dot = svgEl("circle", { cx: p.x, cy: p.y, r: 1.8, class: "nm-hub-dot" });
-        if (!prefersReduced) { dot.style.transformOrigin = p.x + "px " + p.y + "px"; dot.style.animationDelay = (idx * 0.35) + "s"; }
-        g.appendChild(dot);
-        TICKS.forEach(function (d) {
-          g.appendChild(svgEl("line", { x1: p.x + d[0] * 0.72, y1: p.y + d[1] * 0.72, x2: p.x + d[0], y2: p.y + d[1], class: "nm-hub-tick" }));
+        groups.push(g);
+        var subs = (item.sub && item.sub[idx]) || [];
+        var S = subs.length, a0 = Math.atan2(p.o[1], p.o[0]), spread = 0.95;
+        subs.forEach(function (name, m) {
+          var ang = a0 + spread * (m - (S - 1) / 2);
+          var sx = p.x + 31 * Math.cos(ang), sy = p.y + 31 * Math.sin(ang);
+          g.appendChild(svgEl("line", { x1: p.x, y1: p.y, x2: sx.toFixed(1), y2: sy.toFixed(1), class: "nm-sub-link" }));
+          appendEmblem(g, sx, sy, 3.6);
+          var anchor = Math.cos(ang) > 0.35 ? "start" : (Math.cos(ang) < -0.35 ? "end" : "middle");
+          var dy = Math.sin(ang) > 0.4 ? 9 : -6;
+          var tx = svgEl("text", { x: (sx + (anchor === "start" ? 5 : anchor === "end" ? -5 : 0)).toFixed(1), y: (sy + dy).toFixed(1), "text-anchor": anchor, class: "nm-sub-label" });
+          tx.textContent = pick(name, lang);
+          g.appendChild(tx);
         });
-        var t = svgEl("text", { x: p.x, y: p.y + (p.ly || -16), "text-anchor": "middle", class: "nm-label" });
+        appendEmblem(g, p.x, p.y, 9.5);
+        var ly = p.y + (p.o[1] < 0 ? -15 : 19);
+        var t = svgEl("text", { x: p.x, y: ly, "text-anchor": "middle", class: "nm-label" });
         t.textContent = pick(labels[idx], lang);
         g.appendChild(t);
-        var spoke = spokes[idx];
-        g.addEventListener("mouseenter", function () { spoke.classList.add("is-lit"); t.classList.add("is-lit"); });
-        g.addEventListener("mouseleave", function () { spoke.classList.remove("is-lit"); t.classList.remove("is-lit"); });
+        // hover-focus: brighten this group, dim the rest
+        g.addEventListener("mouseenter", function () {
+          if (prefersReduced) return;
+          groups.forEach(function (gg) { gg.style.opacity = (gg === g) ? "1" : "0.18"; });
+        });
+        g.addEventListener("mouseleave", function () {
+          groups.forEach(function (gg) { gg.style.opacity = "1"; });
+        });
         nodesG.appendChild(g);
       })(NM_POS[k], k);
     }
 
-    // centre node: hexagon with a soft halo and the label below it
+    // orchestration core: layered hexagon with a soft pulsing halo, label below
     var cg = svgEl("g", { class: "nm-node-main" });
-    cg.appendChild(svgEl("circle", { cx: cx, cy: cy, r: 21, class: "nm-core-glow" }));
+    cg.appendChild(svgEl("circle", { cx: cx, cy: cy, r: 24, class: "nm-core-glow" }));
+    cg.appendChild(svgEl("circle", { cx: cx, cy: cy, r: 20, class: "nm-core-ring" }));
     cg.appendChild(svgEl("polygon", { points: hexPoints(cx, cy, 13), class: "nm-core-hex" }));
-    cg.appendChild(svgEl("circle", { cx: cx, cy: cy, r: 2.6, class: "nm-core-center" }));
+    cg.appendChild(svgEl("polygon", { points: hexPoints(cx, cy, 7), class: "nm-core-inner" }));
+    cg.appendChild(svgEl("circle", { cx: cx, cy: cy, r: 2, class: "nm-core-dot" }));
     var ct = svgEl("text", { x: cx, y: cy + 32, "text-anchor": "middle", class: "nm-label nm-label-main" });
     ct.textContent = pick(item.core, lang);
     cg.appendChild(ct);
     nodesG.appendChild(cg);
 
+    // gentle fade-in of the whole cluster on a fresh facet
     if (!prefersReduced) {
-      spokes.forEach(function (l, idx) {
-        var len = l.getTotalLength();
-        l.style.strokeDasharray = len;
-        l.style.strokeDashoffset = len;
-        l.getBoundingClientRect(); // force reflow
-        l.style.transition = "stroke-dashoffset .6s var(--ease)";
-        l.style.transitionDelay = (0.05 * idx) + "s";
-        l.style.strokeDashoffset = "0";
-      });
       nodesG.style.opacity = "0";
       nodesG.getBoundingClientRect();
-      nodesG.style.transition = "opacity .45s var(--ease)";
+      nodesG.style.transition = "opacity .5s var(--ease)";
       nodesG.style.opacity = "1";
     }
   }

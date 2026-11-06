@@ -282,10 +282,11 @@ window.WRITING = [
 ];
 
 /* ---------------- Home hero: interactive profile map --------------------
-   Each tab is a facet of your profile. `core` is the central node, `nodes`
-   are the satellites (up to 5), and `define` is the "how I'd define myself"
-   line shown below the map. Edit freely — labels can be a plain string or
-   { en, es } for both languages. */
+   Each tab is a facet of your profile. `core` is the central node and `nodes`
+   are the six concepts around it. `sub` holds the sub-concepts that fan out
+   when a concept is selected (one array per node, same order). `define` is the
+   "how I'd define myself" line shown by default. Labels can be a plain string
+   or { en, es }. Edit freely. */
 window.PROFILE_MAP = [
   {
     key: "perfil",
@@ -296,8 +297,17 @@ window.PROFILE_MAP = [
       { en: "Finance", es: "Finanzas" },
       { en: "Data", es: "Datos" },
       { en: "Research", es: "Investigación" },
+      { en: "Modeling", es: "Modelado" },
       { en: "Decision", es: "Decisión" },
       { en: "AI", es: "IA" }
+    ],
+    sub: [
+      ["FP&A", "Forecasting", { en: "Budget", es: "Presupuesto" }],
+      ["Power BI", "SQL", "ETL"],
+      [{ en: "Econometrics", es: "Econometría" }, { en: "Microdata", es: "Microdatos" }, { en: "Causality", es: "Causalidad" }],
+      [{ en: "Scenarios", es: "Escenarios" }, { en: "Sensitivity", es: "Sensibilidad" }, "P&L"],
+      [{ en: "Reporting", es: "Reportería" }, { en: "Variance", es: "Variaciones" }, "Insights"],
+      ["Machine Learning", { en: "Automation", es: "Automatización" }, { en: "Prediction", es: "Predicción" }]
     ],
     define: {
       en: "An FP&A economist who reads the economy through data and builds the tools to decide.",
@@ -314,7 +324,16 @@ window.PROFILE_MAP = [
       "P&L",
       { en: "Budget", es: "Presupuesto" },
       { en: "Modeling", es: "Modelado" },
-      { en: "Variance", es: "Variaciones" }
+      { en: "Variance", es: "Variaciones" },
+      "Reporting"
+    ],
+    sub: [
+      [{ en: "Projection", es: "Proyección" }, { en: "Scenarios", es: "Escenarios" }, "Drivers"],
+      [{ en: "Revenue", es: "Ingresos" }, { en: "Costs", es: "Costos" }, { en: "Margins", es: "Márgenes" }],
+      ["Budget", "OpEx", { en: "Control", es: "Control" }],
+      [{ en: "Assumptions", es: "Supuestos" }, { en: "Sensitivity", es: "Sensibilidad" }, { en: "Valuation", es: "Valuación" }],
+      ["Budget vs Actual", { en: "Deviations", es: "Desvíos" }, { en: "Analysis", es: "Análisis" }],
+      ["Dashboards", { en: "Management", es: "Gerencial" }, "KPIs"]
     ],
     define: {
       en: "I turn scattered numbers into a clear picture: forecasting, P&L and budget control.",
@@ -326,7 +345,15 @@ window.PROFILE_MAP = [
     tab: { en: "Data", es: "Datos" },
     hint: { en: "DATA", es: "DATOS" },
     core: "Data / BI",
-    nodes: ["Power BI", "SQL", "ETL", "Power Query", "Dashboards"],
+    nodes: ["Power BI", "SQL", "ETL", "Power Query", "Excel", "Dashboards"],
+    sub: [
+      ["DAX", { en: "Modeling", es: "Modelado" }, { en: "Visuals", es: "Visuales" }],
+      ["Queries", "Joins", { en: "Views", es: "Vistas" }],
+      [{ en: "Extraction", es: "Extracción" }, { en: "Cleaning", es: "Limpieza" }, { en: "Load", es: "Carga" }],
+      [{ en: "Transformation", es: "Transformación" }, "M", { en: "Automation", es: "Automatización" }],
+      ["Power Pivot", "VBA", { en: "Formulas", es: "Fórmulas" }],
+      ["KPIs", { en: "Reporting", es: "Reportería" }, { en: "Visualization", es: "Visualización" }]
+    ],
     define: {
       en: "I automate and visualize the data flow end to end.",
       es: "Automatizo y visualizo el flujo de datos de punta a punta."
@@ -340,9 +367,18 @@ window.PROFILE_MAP = [
     nodes: [
       { en: "Econometrics", es: "Econometría" },
       { en: "Microdata", es: "Microdatos" },
-      "ML / IA",
+      { en: "ML / AI", es: "ML / IA" },
+      "Python / R",
       { en: "Economics", es: "Economía" },
       { en: "Evidence", es: "Evidencia" }
+    ],
+    sub: [
+      [{ en: "Regression", es: "Regresión" }, "Panel", { en: "Time series", es: "Series" }],
+      [{ en: "Surveys", es: "Encuestas" }, { en: "Households", es: "Hogares" }, { en: "Sampling", es: "Muestreo" }],
+      [{ en: "Classification", es: "Clasificación" }, { en: "Prediction", es: "Predicción" }, "Features"],
+      ["pandas", "tidyverse", "Scripts"],
+      [{ en: "Applied", es: "Aplicada" }, "Micro", { en: "Policy", es: "Política" }],
+      [{ en: "Causality", es: "Causalidad" }, { en: "Robustness", es: "Robustez" }, { en: "Inference", es: "Inferencia" }]
     ],
     define: {
       en: "Econometric rigor and microdata, with machine learning applied to economics.",
