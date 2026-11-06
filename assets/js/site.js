@@ -718,6 +718,16 @@
           setHeroTab(parseInt(b.getAttribute("data-idx"), 10), true);
         });
       });
+      // keyboard: arrow keys move between facets (ARIA tablist pattern)
+      tabsHost.addEventListener("keydown", function (e) {
+        if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+        e.preventDefault();
+        var btns = $$(".nm-tab", tabsHost);
+        if (!btns.length) return;
+        var next = ((heroTabIndex + (e.key === "ArrowRight" ? 1 : -1)) % btns.length + btns.length) % btns.length;
+        setHeroTab(next, true);
+        if (btns[next]) btns[next].focus();
+      });
     }
     setHeroTab(heroTabIndex, false);
   }
