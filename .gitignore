@@ -7,6 +7,7 @@ desktop.ini
 # Editors
 .vscode/
 .idea/
+.claude/
 
 # Dependencies (not used by this static site, kept for safety)
 node_modules/

@@ -83,14 +83,14 @@
   }
 
   /* --------------------------- nav model -------------------------------- */
+  /* Menu is intentionally lean (5 items). Research now lives inside About,
+     the CV is a download button, and Writing stays hidden until the first
+     real post — the .html pages still exist and work by direct link. */
   var NAV = [
     { key: "nav.home", href: "index.html" },
     { key: "nav.about", href: "about.html" },
     { key: "nav.experience", href: "experience.html" },
     { key: "nav.projects", href: "projects.html" },
-    { key: "nav.research", href: "research.html" },
-    { key: "nav.resume", href: "resume.html" },
-    { key: "nav.writing", href: "writing.html" },
     { key: "nav.contact", href: "contact.html" }
   ];
   function currentPage() {
@@ -500,23 +500,28 @@
     initReveal();
   }
 
-  /* resume: toggle download button availability */
+  /* resume: wire every CV-download control on the page (#cv-download on the
+     résumé page, plus any .js-cv-download button elsewhere) */
   function renderResume() {
-    var btn = $("#cv-download");
-    if (!btn) return;
-    if (SITE.resume && SITE.resume.available) {
-      btn.href = SITE.resume.file;
-      btn.setAttribute("download", "");
-      btn.removeAttribute("aria-disabled");
-      btn.classList.remove("is-disabled");
-    } else {
-      btn.href = "#";
-      btn.setAttribute("aria-disabled", "true");
-      btn.style.opacity = "0.5";
-      btn.style.pointerEvents = "none";
-      var note = $("#cv-note");
-      if (note) note.hidden = false;
-    }
+    var btns = $$("#cv-download, .js-cv-download");
+    if (!btns.length) return;
+    var ok = SITE.resume && SITE.resume.available;
+    btns.forEach(function (btn) {
+      if (ok) {
+        btn.href = SITE.resume.file;
+        btn.setAttribute("download", "");
+        btn.removeAttribute("aria-disabled");
+        btn.classList.remove("is-disabled");
+        btn.style.opacity = "";
+        btn.style.pointerEvents = "";
+      } else {
+        btn.href = "#";
+        btn.setAttribute("aria-disabled", "true");
+        btn.style.opacity = "0.5";
+        btn.style.pointerEvents = "none";
+      }
+    });
+    if (!ok) { var note = $("#cv-note"); if (note) note.hidden = false; }
   }
 
   /* inject SITE-driven bits anywhere via [data-site] */
@@ -573,6 +578,93 @@
     initReveal();
   }
 
+  /* ---------------- animated hero node-map (home) ----------------------- */
+  var SVGNS = "http://www.w3.org/2000/svg";
+  function svgEl(name, attrs) {
+    var e = document.createElementNS(SVGNS, name);
+    for (var k in attrs) if (attrs.hasOwnProperty(k)) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+  function renderHeroMap() {
+    var svg = $("#hero-map");
+    if (!svg) return;
+    var edgesG = $(".nm-edges", svg), nodesG = $(".nm-nodes", svg);
+    if (!edgesG || !nodesG) return;
+    edgesG.textContent = ""; nodesG.textContent = "";
+
+    var center = { x: 170, y: 125, r: 15, main: true, label: "FP&A" };
+    var outer = [
+      { x: 58,  y: 42,  r: 8, label: { en: "Data", es: "Datos" } },
+      { x: 292, y: 56,  r: 8, label: { en: "Model", es: "Modelo" } },
+      { x: 300, y: 180, r: 8, label: "Forecast" },
+      { x: 150, y: 215, r: 8, label: { en: "Decision", es: "Decisión" } },
+      { x: 40,  y: 165, r: 8, label: { en: "Signal", es: "Señal" } }
+    ];
+
+    var spokes = [];
+    outer.forEach(function (o) {
+      var l = svgEl("line", { x1: center.x, y1: center.y, x2: o.x, y2: o.y, class: "nm-edge nm-edge-spoke" });
+      edgesG.appendChild(l); spokes.push(l);
+    });
+    for (var i = 0; i < outer.length; i++) {
+      var a = outer[i], b = outer[(i + 1) % outer.length];
+      var r = svgEl("line", { x1: a.x, y1: a.y, x2: b.x, y2: b.y, class: "nm-edge nm-edge-ring" });
+      edgesG.appendChild(r); spokes.push(r);
+    }
+
+    function addNode(n, idx) {
+      var g = svgEl("g", { class: "nm-node" + (n.main ? " nm-node-main" : "") });
+      var c = svgEl("circle", { cx: n.x, cy: n.y, r: n.r, class: "nm-dot" });
+      if (!prefersReduced) {
+        c.style.transformOrigin = n.x + "px " + n.y + "px";
+        c.style.animationDelay = (idx * 0.4) + "s";
+      }
+      g.appendChild(c);
+      var t = svgEl("text", {
+        x: n.x, y: n.main ? n.y + 3 : n.y - n.r - 6,
+        "text-anchor": "middle", class: "nm-label" + (n.main ? " nm-label-main" : "")
+      });
+      t.textContent = pick(n.label, lang);
+      g.appendChild(t);
+      nodesG.appendChild(g);
+    }
+    outer.forEach(addNode);
+    addNode(center, outer.length);
+
+    if (!prefersReduced) {
+      spokes.forEach(function (l, idx) {
+        var len = l.getTotalLength();
+        l.style.strokeDasharray = len;
+        l.style.strokeDashoffset = len;
+        // force reflow so the transition runs
+        l.getBoundingClientRect();
+        l.style.transition = "stroke-dashoffset .9s var(--ease)";
+        l.style.transitionDelay = (0.12 * idx) + "s";
+        l.style.strokeDashoffset = "0";
+      });
+    }
+  }
+
+  function initHeroParallax() {
+    if (prefersReduced) return;
+    var svg = $("#hero-map");
+    if (!svg) return;
+    var card = svg.closest(".signal") || svg.parentNode;
+    var nodesG = $(".nm-nodes", svg), edgesG = $(".nm-edges", svg);
+    if (!card || !nodesG) return;
+    nodesG.style.transition = edgesG.style.transition = "transform .35s var(--ease)";
+    card.addEventListener("pointermove", function (e) {
+      var r = card.getBoundingClientRect();
+      var dx = (e.clientX - r.left - r.width / 2) / r.width;
+      var dy = (e.clientY - r.top - r.height / 2) / r.height;
+      nodesG.style.transform = "translate(" + (dx * 9) + "px," + (dy * 9) + "px)";
+      edgesG.style.transform = "translate(" + (dx * 4) + "px," + (dy * 4) + "px)";
+    });
+    card.addEventListener("pointerleave", function () {
+      nodesG.style.transform = ""; edgesG.style.transform = "";
+    });
+  }
+
   /* --------------------------- boot ------------------------------------- */
   function boot() {
     buildHeader();
@@ -583,16 +675,17 @@
     reRenderers = [renderMarquee, renderSkillGroups, renderFeatured, renderProjects,
       renderExperience, renderResearch, renderWriting, renderProjectDetail,
       renderArticle, renderContact, renderSiteBits, renderResume,
-      renderEducation, renderCertifications, renderLanguages];
+      renderEducation, renderCertifications, renderLanguages, renderHeroMap];
 
     renderMarquee(); renderSkillGroups(); renderFeatured(); renderProjects();
     renderExperience(); renderResearch(); renderWriting(); renderProjectDetail();
     renderArticle(); renderContact(); renderResume(); renderSiteBits();
-    renderEducation(); renderCertifications(); renderLanguages();
+    renderEducation(); renderCertifications(); renderLanguages(); renderHeroMap();
 
     initReveal();
     initSpotlight();
     initPageTransitions();
+    initHeroParallax();
 
     document.body.classList.add("page-fade");
   }

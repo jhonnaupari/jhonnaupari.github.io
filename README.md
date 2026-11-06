@@ -1,8 +1,7 @@
 # Jhon Ñaupari — Personal Portfolio
 
 Portafolio personal de **Jhon Ñaupari** (economista · datos y finanzas).
-Sitio **estático** (HTML + CSS + JavaScript vanilla), **sin paso de build** y listo para
-publicarse gratis en **GitHub Pages** o **Vercel**.
+Sitio **estático** (HTML + CSS + JavaScript vanilla)
 
 > Estética editorial + tecnológica · modo claro/oscuro · bilingüe (ES/EN) ·
 > accesible · optimizado para SEO. Hecho desde cero, sin plantillas.
@@ -76,46 +75,7 @@ Agrega un objeto a `window.WRITING`. El cuerpo es una lista de bloques:
 
 ---
 
-## 3. Ver el sitio en local
-
-No necesitas Node. Opciones:
-
-- **Doble clic** en `index.html` (funciona, aunque algunas funciones van mejor con servidor).
-- **Servidor local** (recomendado), con cualquiera de estos:
-
-```bash
-python -m http.server 8000
-```
-
-Luego abre `http://localhost:8000`.
-(Si tienes Node algún día: `npx serve` también sirve.)
-
----
-
-## 4. Publicar en GitHub Pages (gratis)
-
-1. Crea un repositorio en GitHub. Para URL limpia (`https://TUUSUARIO.github.io`),
-   nómbralo exactamente **`TUUSUARIO.github.io`**. Si usas otro nombre, el sitio vivirá en
-   `https://TUUSUARIO.github.io/NOMBRE-REPO/` (ver § 6 sobre URLs absolutas).
-2. Sube el contenido de esta carpeta al repo.
-3. En GitHub: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-4. Cada push a la rama `main` publica el sitio automáticamente (workflow en
-   `.github/workflows/deploy.yml`). También puedes lanzarlo manualmente desde la pestaña
-   **Actions**.
-
-> No subas secretos ni credenciales. Este sitio no los necesita.
-
-## 5. Publicar en Vercel (gratis, plan Hobby)
-
-1. Entra a vercel.com e importa el repositorio de GitHub.
-2. Framework preset: **Other** · Build command: *(vacío)* · Output directory: `.`
-3. Deploy. Vercel sirve los archivos estáticos tal cual.
-4. Cada push a `main` genera un nuevo despliegue. Puedes añadir tu dominio en
-   **Project → Settings → Domains**.
-
----
-
-## 6. SEO y metadatos — qué actualizar tras desplegar
+## 3. SEO y metadatos — qué actualizar tras desplegar
 
 Las etiquetas canónicas y Open Graph usan como base
 `https://jhonnaupari.github.io`. **Cámbiala por tu URL real** cuando la tengas:
@@ -132,7 +92,7 @@ sin PNG el sitio funciona, solo puede no mostrarse la miniatura en algunas apps.
 
 ---
 
-## 7. Temas, idioma y accesibilidad
+## 4. Temas, idioma y accesibilidad
 
 - **Tema:** botón ☾/☀ en el header. Respeta `prefers-color-scheme` en la primera visita y
   recuerda la elección (localStorage).
@@ -142,7 +102,7 @@ sin PNG el sitio funciona, solo puede no mostrarse la miniatura en algunas apps.
 
 ---
 
-## 8. Personalización rápida del diseño
+## 5. Personalización rápida del diseño
 
 Todo el sistema visual vive en `assets/css/main.css` como variables CSS (`:root`).
 Para cambiar el **color de acento**, edita `--accent` (y `--accent-soft`, `--selection`)
@@ -151,6 +111,6 @@ en los bloques de tema oscuro y claro. Tipografías: variables `--font-display`,
 
 ---
 
-## 9. Checklist de datos pendientes
+## 6. Checklist de datos pendientes propios
 
 Ver [`CONTENT-TODO.md`](CONTENT-TODO.md).
