@@ -835,6 +835,30 @@ h1, h2, h3, h4 { line-height: 1.1; font-weight: 500; letter-spacing: -0.02em; }
 }
 .project-card:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }
 
+/* ---------- Focus portrait (home) ---------- */
+.focus-portrait {
+  margin: 1.6rem 0 0;
+  max-width: 300px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+.focus-portrait img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: saturate(0.92) contrast(1.02);
+  transition: transform 0.6s var(--ease), filter 0.6s var(--ease);
+}
+.focus-portrait:hover img { filter: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .focus-portrait:hover img { transform: scale(1.04); }
+}
+@media (max-width: 820px) {
+  .focus-portrait { max-width: 240px; }
+}
+
 /* ---------- Project conceptual art ---------- */
 .proj-art {
   position: relative;
